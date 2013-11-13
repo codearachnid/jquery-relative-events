@@ -1,4 +1,4 @@
-jquery-relative-events
+jQuery Relative Events
 ======================
 
 A simple plugin to organize your events in a daily view and positioned in relationship to each other.
