@@ -1,3 +1,14 @@
+/**
+ * jQuery Relative Events
+ *
+ * A simple plugin to organize events in a daily view and positioned 
+ * in relationship to each other.
+ * 
+ * @author Timothy Wood @codearachnid <tim@imaginesimplicity.com>
+ * @license GPLV3
+ * 
+ */
+
 // the semi-colon before function invocation is a safety net against concatenated
 // scripts and/or other plugins which may not be closed properly.
 ;(function ( $, window, document, undefined ) {
@@ -11,17 +22,18 @@
             eventOffset: { top: 0, left:0, width:0, height:0 },
             sortEvents: false,
             setStartOfDay: true,
-            dayStart: 9, // day starts at 9am
+            dayStart: 8, // day starts at 8am
             dayStartOffset: 0, // should there be an offset
         };
 
-    // The actual plugin constructor
+    // plugin constructor
     function Plugin ( element, options ) {
         this.element = element;
         this.settings = $.extend( {}, defaults, options );
         this._defaults = defaults;
         this._name = pluginName;
         this._debug = this.settings.debug;
+        // hold events
         this.eventData = {
             item: [],
             map: [],
@@ -34,13 +46,12 @@
         init: function () {
             if( this._debug ) {
                 console.time( this._name + "-init");
-                console.log(this._name + ':init()');
+                console.log(this._name + ".init()");
             }
 
             // gather event data and set positions
-            if( this.setEventData() ){
+            if( this.setEventData() )
                 this.setEventPositions();
-            }
 
             // set the start of day for the day column
             if( this.settings.setStartOfDay )
@@ -53,7 +64,7 @@
         setEventData: function(){
             if( this._debug ) {
                 console.time(this._name + "-setEventData");
-                console.log(this._name + ':setEventData()');
+                console.log(this._name + ".setEventData()");
             }
 
             var $this = this, eventList = $(this.element).find('.events .event');
@@ -93,7 +104,7 @@
         setEventPositions: function(){
             if( this._debug ) {
                 console.time(this._name + "-setEventPositions");
-                console.log(this._name + ':setEventPositions()');
+                console.log(this._name + ".setEventPositions()");
             }
 
             var $this = this, columnWidth = $(this.element).find('.events').width();
@@ -129,7 +140,7 @@
         insertEventToGroup: function( eID, start, end, groupID ){
             if( this._debug ) {
                 console.time(this._name + "-insertEventToGroup");
-                console.log(this._name + ':insertEventToGroup (eID:' + eID + ' start:'+start+' end:'+end+' groupID:'+groupID+')');
+                console.log(this._name + ".insertEventToGroup(" + eID + "," + start + "," + end + "," + groupID + ")");
             }
 
             if( this.eventData.group.length == 0 || this.eventData.group.length <= groupID ){
@@ -184,7 +195,7 @@
         insertEventToMap: function( eID, start, end, columnID ){
             if( this._debug ) {
                 console.time(this._name + "-insertEventToMap");
-                console.log(this._name + ':insertEventToMap (eID:' + eID + ' start:'+start+' end:'+end+' columnID:'+columnID+')');
+                console.log(this._name + ".insertEventToMap(" + eID + "," + start + "," + end + "," + columnID + ")");
             }
 
             // add column to event map if it meets the conditions
@@ -239,13 +250,13 @@
         setStartOfDay: function(){
             if( this._debug ) {
                 console.time(this._name + "-setStartOfDay");
-                console.log(this._name + ':setStartOfDay()');
+                console.log(this._name + ".setStartOfDay()");
             }
 
             var calendarWrap = $(this.element);
             var morningStart = calendarWrap.find('.grid li[data-hour=' + parseInt(this.settings.dayStart) + ']');
             calendarWrap.scrollTop( 
-                morningStart.offset().top -
+                morningStart.position().top -
                 calendarWrap.scrollTop() +
                 parseInt(this.settings.dayStartOffset) );
 
@@ -254,22 +265,30 @@
                 console.timeEnd(this._name + "-setStartOfDay");
         },
         arrayFill: function (start_index, duration, mixed_val) {
-          // original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-          // improved by: Waldo Malqui Silva
-          var tmp_arr = {};
-        
-          if (!isNaN(start_index) && !isNaN(duration)) {
-            for (var i = 0; i < duration; i++) {
-              tmp_arr[(i + start_index)] = mixed_val;
-            }
-          }
-        
-          return tmp_arr;
+			// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+			// improved by: Waldo Malqui Silva
+			if( this._debug ) {
+			    console.time(this._name + "-arrayFill");
+			    console.log(this._name + ".arrayFill(" + start_index + "," + duration + "," + mixed_val + ")");
+			}
+
+			var tmp_arr = {};
+
+			if (!isNaN(start_index) && !isNaN(duration)) {
+				for (var i = 0; i < duration; i++) {
+					tmp_arr[(i + start_index)] = mixed_val;
+				}
+			}
+
+			// stop debug timer
+			if(this._debug)
+			    console.timeEnd(this._name + "-arrayFill");
+
+			return tmp_arr;
         }
     };
 
-    // A really lightweight plugin wrapper around the constructor,
-    // preventing against multiple instantiations
+    // prevent against multiple instantiations with plugin wrapper for constuctor
     $.fn[ pluginName ] = function ( options ) {
         return this.each(function() {
             if ( !$.data( this, "plugin_" + pluginName ) ) {

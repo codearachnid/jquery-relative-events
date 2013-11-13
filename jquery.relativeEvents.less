@@ -1,32 +1,45 @@
+/**
+ * jQuery Relative Events
+ *
+ * These styles are the basic framework for layout
+ * 
+ */
+
 .calendar{
-    width:400px;
+
+	@calendar-width: 600px;
+	@minute: 1px;
+	@time-width: 50px;
+
+    width:@calendar-width;
     border:1px solid #444;
     position:relative;
-    height:480px; /* height of 8 hours */
+    height:599px; // height of 10 hours ( default 8-5pm )
     overflow-y:scroll;
     overflow-x:hidden;
 
     .grid{
 	    list-style:none;
-	    margin:0;
+	    margin:-1px 0 0; // cheat the top border under the wrapper
 	    padding:0;
 	    position:absolute;
 
 	    li{
 		    display:block;
-		    height:60px;
-		    width:400px;
+		    height:@minute * 60;
+		    width:@calendar-width;
 		    position:relative;
 
 		    span{
 			    position:absolute;
 			    top:0;
 			    left: 0;
-			    height:60px;
+			    height:@minute * 60;
 			    padding:0 5px 0 0;
-			    width:50px;
+			    width:@time-width;
 			    background:#fff;
 			    border-right:1px solid #ddd;
+			    border-top:1px dotted #eee;
 			    display:block;
 			    text-align:right;
 			    z-index:10;
@@ -35,13 +48,13 @@
 			}
 
 			div{
-			    height: 30px;
-			    top:0;
+				top:0;
 			    left: 0;
 			    width:100%;
-			    margin-bottom: 30px;
+			    height: @minute * 30; // half hour increment for split border
 			    border-bottom: 1px dotted #ddd;
 			    border-top: 1px solid #ddd;
+			    margin-bottom: @minute * 30;
 			    position:absolute;
 			    display:block;
 			    z-index:5;
@@ -51,13 +64,14 @@
 
     .events{
 	    z-index: 20;
-	    width: 326px;
-	    margin-left: 56px;
+	    width: @calendar-width - @time-width - 5;
+	    margin-left: @time-width + 5;
 	    position: relative;
 	    height:100%;
 
 	    .event{
 		    padding:2px;
+		    margin:0;
 		    background: #ddd;
 		    color:#333;
 		    border-radius:2px;
