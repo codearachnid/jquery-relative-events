@@ -255,6 +255,16 @@
 
             var calendarWrap = $(this.element);
             var morningStart = calendarWrap.find('.grid li[data-hour=' + parseInt(this.settings.dayStart) + ']');
+            
+            // bad dom return gracefully
+            if (morningStart.length == 0) {
+                console.log(this._name + ".setStartOfDay() error: day start could not be found in dom");
+                // stop debug timer
+                if (this._debug)
+                    console.timeEnd(this._name + "-setStartOfDay");
+                return false;
+            }
+            
             calendarWrap.scrollTop( 
                 morningStart.position().top -
                 calendarWrap.scrollTop() +
