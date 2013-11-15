@@ -91,14 +91,14 @@
             var $this = this;
 
             // loop through days on calendar
-            $(this.element).find('.day').each(function(i, day){
+            $(this.element).find('.day').each(function(i, day) {
 
                 // get or set unique id for parsing events
-                if( typeof $(day).id === 'undefined' ) {
+                if( typeof $(day).attr('id') === 'undefined' ) {
                     var uuid =  $this.getUUID();
                     $(day).attr('id', uuid );
                 } else {
-                    var uuid =  $(day).id;    
+                    var uuid = $(day).attr('id');    
                 }
 
                 // add class "first" to first day column
@@ -182,7 +182,6 @@
                 for( var i=0; i<this.eventData[ uuid ].group.length; i++){
                     // set width of each contiguous event in the group
                     itemWidth = ( parseInt( columnWidth ) / parseInt( this.eventData[ uuid ].group[i].maxWidth ) ) + parseInt(this.settings.eventOffset.width);
-                    console.log( columnWidth + "/" + this.eventData[ uuid ].group[i].maxWidth + "+" + this.settings.eventOffset.width);
                     
                     // loop through event ids to paint offsets and dimension
                     for( var ii=0; ii< this.eventData[ uuid ].group[i].id.length; ii++ ){
