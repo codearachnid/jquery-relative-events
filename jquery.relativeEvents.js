@@ -19,7 +19,12 @@
     var pluginName = "relativeEvents",
         defaults = {
             debug: false,
-            eventOffset: { top: 0, left:0, width:0, height:0 },
+            eventOffset: {
+                top: -61, // offset because of 48 borders for hour and half hour dividers
+                left: 5,
+                height: -4, // offset height because of the event borders
+                width: -6, // offset width because of the event borders
+            },
             sortEvents: false,
             setStartOfDay: true,
             dayStart: 8, // day starts at 8am
