@@ -7,7 +7,8 @@
 
 .calendar{
 
-	@calendar-width: 600px;
+	@fullweek-columns: 7;
+	@calendar-width: 775px;
 	@minute: 1px;
 	@time-width: 50px;
 
@@ -45,7 +46,7 @@
 			    z-index:10;
 			    font-size:10px;
 			    line-height:30px;
-			    color:#666;
+			    color: #666;
 			}
 
 			div{
@@ -63,12 +64,18 @@
 		}
 	}
 
-    .events{
+    .day{
 	    z-index: 20;
-	    width: @calendar-width - @time-width - 5;
-	    margin-left: @time-width + 5;
+	    width: @calendar-width - @time-width - 10;
 	    position: relative;
-	    height:100%;
+	    height:@minute * 60 * 24;
+	    float:left;
+	    border-right: 1px solid #eee;
+
+	   &.first{
+		   margin-left: @time-width + 8;
+	   }
+
 
 	    .event{
 		    padding:2px;
@@ -84,4 +91,17 @@
 		    left:0;
 		}
 	}
+
+	&.single{
+		.day{
+			width: @calendar-width - @time-width - 8;
+		}
+	}
+
+	&.fullweek{
+		.day{
+			width: ( @calendar-width - @time-width - 32 ) / @fullweek-columns;
+		}
+	}
+
 }
