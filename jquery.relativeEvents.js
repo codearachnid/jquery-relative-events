@@ -25,6 +25,7 @@
                 height: -4, // offset height because of the event borders
                 width: -6, // offset width because of the event borders
             },
+            setNow: true,
             sortEvents: false,
             setStartOfDay: true,
             dayStart: 8, // day starts at 8am
@@ -54,6 +55,10 @@
             // gather event data and set positions
             if( this.setEventData() )
                 this.setEventPositions();
+
+            // set the start of day for the day column
+            if( this.settings.setNow )
+                this.setNow();
 
             // set the start of day for the day column
             if( this.settings.setStartOfDay )
@@ -334,6 +339,40 @@
                 this.insertEventToMap( eID, start, end, uuid, columnID );
             }
         },
+        setNow: function(){
+            // when in debug mode
+            if( this._debug ) {
+                console.time(this._name + "-setNow");
+                console.log(this._name + ".setNow()");
+            }
+
+            var nowElement = $(this.element).find('.now');
+            
+            // bad dom return gracefully
+            if (nowElement.length == 0) {
+                // stop debug timer
+                if (this._debug) {
+                    console.log(this._name + ".setNow(): .now could not be found in calendar");
+                    console.timeEnd(this._name + "-setStartOfDay");
+                }
+                return false;
+            }
+
+            nowElement.html('').append( [ 
+                $('<div>').addClass('label').text('NOW'),
+                $('<div>').addClass('arrow-left'),
+                $('<hr>').addClass('line'),
+                $('<div>').addClass('arrow-right') 
+                ]);
+            
+            // set .now to hourly position
+            var currentDate = new Date();
+            nowElement.css( { top: ( ( currentDate.getHours() - 1 ) * 60 ) + currentDate.getMinutes() } );
+
+            // stop debug timer
+            if(this._debug)
+                console.timeEnd(this._name + "-setNow");
+        },
         setStartOfDay: function(){
             // when in debug mode
             if( this._debug ) {
@@ -363,27 +402,27 @@
                 console.timeEnd(this._name + "-setStartOfDay");
         },
         arrayFill: function (start_index, duration, mixed_val) {
-			// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-			// improved by: Waldo Malqui Silva
+            // original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+            // improved by: Waldo Malqui Silva
             // when in debug mode
-			if( this._debug ) {
-			    console.time(this._name + "-arrayFill");
-			    console.log(this._name + ".arrayFill(" + start_index + "," + duration + "," + mixed_val + ")");
-			}
+            if( this._debug ) {
+                console.time(this._name + "-arrayFill");
+                console.log(this._name + ".arrayFill(" + start_index + "," + duration + "," + mixed_val + ")");
+            }
 
-			var tmp_arr = {};
+            var tmp_arr = {};
 
-			if (!isNaN(start_index) && !isNaN(duration)) {
-				for (var i = 0; i < duration; i++) {
-					tmp_arr[(i + start_index)] = mixed_val;
-				}
-			}
+            if (!isNaN(start_index) && !isNaN(duration)) {
+                for (var i = 0; i < duration; i++) {
+                    tmp_arr[(i + start_index)] = mixed_val;
+                }
+            }
 
-			// stop debug timer
-			if(this._debug)
-			    console.timeEnd(this._name + "-arrayFill");
+            // stop debug timer
+            if(this._debug)
+                console.timeEnd(this._name + "-arrayFill");
 
-			return tmp_arr;
+            return tmp_arr;
         },
         getUUID: function() {
             // http://www.ietf.org/rfc/rfc4122.txt
