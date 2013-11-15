@@ -1,7 +1,9 @@
-jQuery Relative Events v.3
+jQuery Relative Events v.8
 ======================
 
 A simple plugin to organize your events in a daily view and positioned in relationship to each other.
+
+Has the ability to parse any number of day columns added to the calendar view - will dynamically position events within proper column by day.
 
 ####Contributors
 
