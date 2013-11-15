@@ -6,7 +6,8 @@
 <script type="text/javascript" src="jquery.relativeEvents.demo.js"></script>
 </head>
 <body>
-<div class="calendar">
+    <h3>Single day of events</h3>
+<div id="single_day" class="calendar single">
     <ul class="grid">
         <li data-hour="1">
             <span>1AM</span>
@@ -105,7 +106,114 @@
             <div></div>
         </li>
     </ul>
-    <div id="demoEvents" class="events day" data-day="2013-11-11"></div>
+    <div class="events day first" data-date="2013-11-11"></div>
+</div>
+<h3>Full week of events</h3>
+<div id="full_week" class="calendar fullweek">
+    <ul class="grid">
+        <li data-hour="1">
+            <span>1AM</span>
+            <div></div>
+        </li>
+        <li data-hour="2">
+            <span>2AM</span>
+            <div></div>
+        </li>
+        <li data-hour="3">
+            <span>3AM</span>
+            <div></div>
+        </li>
+        <li data-hour="4">
+            <span>4AM</span>
+            <div></div>
+        </li>
+        <li data-hour="5">
+            <span>5AM</span>
+            <div></div>
+        </li>
+        <li data-hour="6">
+            <span>6AM</span>
+            <div></div>
+        </li>
+        <li data-hour="7">
+            <span>7AM</span>
+            <div></div>
+        </li>
+        <li data-hour="8">
+            <span>8AM</span>
+            <div></div>
+        </li>
+        <li data-hour="9">
+            <span>9AM</span>
+            <div></div>
+        </li>
+        <li data-hour="10">
+            <span>10AM</span>
+            <div></div>
+        </li>
+        <li data-hour="11">
+            <span>11AM</span>
+            <div></div>
+        </li>
+        <li data-hour="12">
+            <span>Noon</span>
+            <div></div>
+        </li>
+        <li data-hour="13">
+            <span>1PM</span>
+            <div></div>
+        </li>
+        <li data-hour="14">
+            <span>2PM</span>
+            <div></div>
+        </li>
+        <li data-hour="15">
+            <span>3PM</span>
+            <div></div>
+        </li>
+        <li data-hour="16">
+            <span>4PM</span>
+            <div></div>
+        </li>
+        <li data-hour="17">
+            <span>5PM</span>
+            <div></div>
+        </li>
+        <li data-hour="18">
+            <span>6PM</span>
+            <div></div>
+        </li>
+        <li data-hour="19">
+            <span>7PM</span>
+            <div></div>
+        </li>
+        <li data-hour="20">
+            <span>8PM</span>
+            <div></div>
+        </li>
+        <li data-hour="21">
+            <span>9PM</span>
+            <div></div>
+        </li>
+        <li data-hour="22">
+            <span>10PM</span>
+            <div></div>
+        </li>
+        <li data-hour="23">
+            <span>11PM</span>
+            <div></div>
+        </li>
+        <li data-hour="24">
+            <span>12PM</span>
+            <div></div>
+        </li>
+    </ul>
+    <!-- 
+
+    build your own event column like this:
+
+    <div class="events day" data-day="2013-11-11"></div> 
+    -->
 </div>
 </body>
 </html>
