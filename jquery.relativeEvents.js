@@ -1,5 +1,5 @@
 /**
- * jQuery Relative Events
+ * jQuery Relative Events v.8
  *
  * A simple plugin to organize events in a daily view and positioned 
  * in relationship to each other.
@@ -33,17 +33,14 @@
         this._defaults = defaults;
         this._name = pluginName;
         this._debug = this.settings.debug;
-        // hold events
-        this.eventData = {
-            item: [],
-            map: [],
-            group: []
-        };
+        // hold events, each node will contain properties of item, group and map
+        this.eventData = [],
         this.init();
     }
 
     Plugin.prototype = {
         init: function () {
+            // when in debug mode
             if( this._debug ) {
                 console.time( this._name + "-init");
                 console.log(this._name + ".init()");
@@ -62,89 +59,152 @@
                 console.timeEnd(this._name + "-init");
         },
         setEventData: function(){
+            // when in debug mode
             if( this._debug ) {
                 console.time(this._name + "-setEventData");
                 console.log(this._name + ".setEventData()");
             }
 
-            var $this = this, eventList = $(this.element).find('.events .event');
-            eventList.each(function(i, item){
-                item = $(item);
-                // if the event dom does not have an ID set we need to specify one
-                if( typeof item.attr('id') === 'undefined' ){
-                    itemID = 'event-' + i;
-                    item.attr('id', itemID);
-                }else{
-                    itemID = item.attr('id');
-                }
-                var startTime = parseInt(item.attr('data-hour')) * 60 + parseInt(item.attr('data-minute'));
-                var endTime = startTime + parseInt(item.attr('data-duration'));
-                // load up eventData items with our event item and calculated start/end by minutes
-                $this.eventData.item[ itemID ] = {
-                    start: startTime,
-                    end: endTime,
-                    column: 0 // which column is the event positioned
-                };
-                // load up events to map
-                $this.insertEventToMap( itemID, startTime, endTime, false );
-                // load up events to groups
-                $this.insertEventToGroup( itemID, startTime, endTime, false );
+            // store instance in method global
+            var $this = this;
 
-                // when finished looping let's exit gracefully
-                if( i == eventList.length-1 ){
+            // loop through days on calendar
+            $(this.element).find('.day').each(function(i, day){
+
+                // get or set unique id for parsing events
+                if( typeof $(day).id === 'undefined' ) {
+                    var uuid =  $this.getUUID();
+                    $(day).attr('id', uuid );
+                } else {
+                    var uuid =  $(day).id;    
+                }
+
+                // add class "first" to first day column
+                if( i == 0)
+                    $(day).addClass('first');                
+
+                // store event list objects for reference within loop
+                var events = $(day).find('.event');
+
+                // when event data node does not exist prefill
+                if( typeof $this.eventData[ uuid ] === 'undefined')
+                    $this.eventData[ uuid ] =  {
+                        item: [],
+                        map: [],
+                        group: []
+                    };
+                
+                // loop through available events within the set day
+                events.each(function(ii, item){
+
+                    // set jQuery object from event dom object
+                    item = $(item);
+
+                    // if the event dom does not have an ID set we need to specify one
+                    if( typeof item.attr('id') === 'undefined' ){
+                        itemID = 'event-' + ii;
+                        item.attr('id', itemID);
+                    }else{
+                        itemID = item.attr('id');
+                    }
+
+                    // set time range of event
+                    var startTime = parseInt(item.attr('data-hour')) * 60 + parseInt(item.attr('data-minute'));
+                    var endTime = startTime + parseInt(item.attr('data-duration'));
+
+                    // load up eventData items with our event item and calculated start/end by minutes
+                    $this.eventData[ uuid ].item[ itemID ] = {
+                        start: startTime,
+                        end: endTime,
+                        day: uuid, // id for which daily column this event originates
+                        column: 0 // which column is the event positioned
+                    };
+
+                    // load up events to map
+                    $this.insertEventToMap( itemID, startTime, endTime, uuid, false );
+
+                    // load up events to groups
+                    $this.insertEventToGroup( itemID, startTime, endTime, uuid, false );
+
+                });
+
+                // exit gracefully when finished looping all available events
+                if( i == $($this.element).find('.day').length-1 ){
                     if( $this._debug ) {
                         // stop debug timer
                         console.timeEnd($this._name + "-setEventData");
-                        console.log($this.eventData);
                     }
                 }
+
             });
+            
             return true;
         },
         setEventPositions: function(){
+            // when in debug mode
             if( this._debug ) {
                 console.time(this._name + "-setEventPositions");
                 console.log(this._name + ".setEventPositions()");
             }
 
-            var $this = this, columnWidth = $(this.element).find('.events').width();
-            // console.log(columnWidth);
+            // store instance in method global
+            var $this = this;
 
-            // loop through event groups and begin painting event positions
-            for( var i=0; i<this.eventData.group.length; i++){
-                // set width of each contiguous event in the group
-                itemWidth = parseInt( columnWidth ) / parseInt( this.eventData.group[i].maxWidth );
-                // loop through event ids to paint offsets and dimension
-                for( var ii=0; ii< this.eventData.group[i].id.length; ii++ ){
-                    item = this.eventData.item[ this.eventData.group[i].id[ii] ];
-                    itemOffset = {};
-                    itemOffset.top = item.start + parseInt(this.settings.eventOffset.top);
+            // loop through available day in the event data array
+            for ( var uuid in this.eventData){
 
-                    // build left offset (faster if we know the maxWidth > 1)
-                    if( parseInt( this.eventData.group[i].maxWidth ) > 1 && item.column > 1 ){
-                        itemOffset.left = ( itemWidth * (item.column-1) ) + parseInt(this.settings.eventOffset.left);
-                        //console.log( this.eventData.group[i].id[ii] + " itemWidth:" + itemWidth + " offsetLeft:" + itemOffset.left);
-                    }
+                // determine column width for current day
+                columnWidth = $(this.element).find( '#' + uuid ).width();
+
+                // loop through event groups and begin painting event positions
+                for( var i=0; i<this.eventData[ uuid ].group.length; i++){
+                    // set width of each contiguous event in the group
+                    itemWidth = ( parseInt( columnWidth ) / parseInt( this.eventData[ uuid ].group[i].maxWidth ) ) + parseInt(this.settings.eventOffset.width);
+                    console.log( columnWidth + "/" + this.eventData[ uuid ].group[i].maxWidth + "+" + this.settings.eventOffset.width);
                     
-                    $( '#' + this.eventData.group[i].id[ii] )
-                        .width( itemWidth + parseInt(this.settings.eventOffset.width) )
-                        .height( parseInt(item.end) - parseInt(item.start) + parseInt(this.settings.eventOffset.height) )
-                        .offset(itemOffset);
-                };
+                    // loop through event ids to paint offsets and dimension
+                    for( var ii=0; ii< this.eventData[ uuid ].group[i].id.length; ii++ ){
+
+                        // set simple var to hold values from global event object
+                        item = this.eventData[ uuid ].item[ this.eventData[ uuid ].group[i].id[ii] ];
+
+                        // calculate itemHeight by duration + offset
+                        itemHeight = parseInt(item.end) - parseInt(item.start) + parseInt(this.settings.eventOffset.height);
+
+                        itemOffset = {};
+                        itemOffset.top = item.start + parseInt(this.settings.eventOffset.top);
+                        
+
+                        // build left offset (faster if we know the maxWidth > 1)
+                        if( parseInt( this.eventData[ uuid ].group[i].maxWidth ) > 1 && item.column > 1 ){
+                            itemOffset.left = ( itemWidth * (item.column-1) ) + ( parseInt(this.settings.eventOffset.left) * (item.column-1) );
+                        }
+                        
+                        $( '#' + this.eventData[ uuid ].group[i].id[ii], $( '#' + uuid ) )
+                            .width( itemWidth )
+                            .height( itemHeight )
+                            .css(itemOffset);
+
+                        if( $this._debug) {
+                            console.log(this._name + ".setEventPosition: column: #" + uuid + " item: #" + this.eventData[ uuid ].group[i].id[ii] + " width:" + itemWidth + "px height:" + itemHeight + "px offset-x:" + $( '#' + this.eventData[ uuid ].group[i].id[ii] ).offset().left + " offset-y:" + $( '#' + this.eventData[ uuid ].group[i].id[ii] ).offset().top );
+                        }
+                    };
+                }
             }
 
             // stop debug timer
             if(this._debug)
                 console.timeEnd(this._name + "-setEventPositions");
         },
-        insertEventToGroup: function( eID, start, end, groupID ){
+        insertEventToGroup: function( eID, start, end, uuid, groupID ){
+            // when in debug mode
             if( this._debug ) {
                 console.time(this._name + "-insertEventToGroup");
-                console.log(this._name + ".insertEventToGroup(" + eID + "," + start + "," + end + "," + groupID + ")");
+                console.log(this._name + ".insertEventToGroup(" + eID + "," + start + "," + end + "," + uuid + "," + groupID + ")");
             }
 
-            if( this.eventData.group.length == 0 || this.eventData.group.length <= groupID ){
-                this.eventData.group[this.eventData.group.length] = {
+            if( this.eventData[ uuid ].group.length == 0 || this.eventData[ uuid ].group.length <= groupID ){
+                this.eventData[ uuid ].group[this.eventData[ uuid ].group.length] = {
                     id: [ eID ],
                     range: {
                         start: start,
@@ -152,7 +212,7 @@
                     },
                     maxWidth: 1 // set max width (columns) of contigious events in group
                 };
-                groupID = this.eventData.group.length-1;
+                groupID = this.eventData[ uuid ].group.length-1;
 
                 // stop debug timer
                 if(this._debug)
@@ -161,23 +221,23 @@
                 // with a specified group ID we will insert the eID into the group or search for available group
                 if( groupID !== false ){
                     // insert event ID to id group
-                    this.eventData.group[groupID].id.push( eID );
+                    this.eventData[ uuid ].group[groupID].id.push( eID );
 
                     // extend the range if the current event stretches beyond our end
-                    if( this.eventData.group[groupID].range.end < end ){
-                        this.eventData.group[groupID].range.end = end;
+                    if( this.eventData[ uuid ].group[groupID].range.end < end ){
+                        this.eventData[ uuid ].group[groupID].range.end = end;
                     }
 
                     // update max width (columns) of contigious events in group
-                    if( this.eventData.group[groupID].maxWidth < this.eventData.item[ itemID ].column){
-                        this.eventData.group[groupID].maxWidth = this.eventData.item[ itemID ].column;
+                    if( this.eventData[ uuid ].group[groupID].maxWidth < this.eventData[ uuid ].item[ itemID ].column){
+                        this.eventData[ uuid ].group[groupID].maxWidth = this.eventData[ uuid ].item[ itemID ].column;
                     }
                 } else {
                     // set group ID to be extreme length of the group before looping
-                    groupID = this.eventData.group.length;
-                    for( var i=0; i<this.eventData.group.length; i++){
+                    groupID = this.eventData[ uuid ].group.length;
+                    for( var i=0; i<this.eventData[ uuid ].group.length; i++){
                         // set matching group ID if start time is within the range of the group
-                        if( this.eventData.group[i].range.start <= start && this.eventData.group[i].range.end > start){
+                        if( this.eventData[ uuid ].group[i].range.start <= start && this.eventData[ uuid ].group[i].range.end > start){
                             groupID = i;
                             break;
                         }
@@ -188,30 +248,31 @@
                         console.timeEnd(this._name + "-insertEventToGroup");
 
                     // explicit insert event ID to group
-                    this.insertEventToGroup( eID, start, end, groupID );
+                    this.insertEventToGroup( eID, start, end, uuid, groupID );
                 }
             }
         },
-        insertEventToMap: function( eID, start, end, columnID ){
+        insertEventToMap: function( eID, start, end, uuid, columnID ){
+            // when in debug mode
             if( this._debug ) {
                 console.time(this._name + "-insertEventToMap");
-                console.log(this._name + ".insertEventToMap(" + eID + "," + start + "," + end + "," + columnID + ")");
+                console.log(this._name + ".insertEventToMap(" + eID + "," + start + "," + end + "," + uuid + "," + columnID + ")");
             }
 
             // add column to event map if it meets the conditions
-            if( this.eventData.map.length == 0 || this.eventData.map.length <= columnID ){
-                this.eventData.map.push( this.arrayFill(0,1440, '') );
-                columnID = this.eventData.map.length-1;
+            if( this.eventData[ uuid ].map.length == 0 || this.eventData[ uuid ].map.length <= columnID ){
+                this.eventData[ uuid ].map.push( this.arrayFill(0,1440, '') );
+                columnID = this.eventData[ uuid ].map.length-1;
             }
 
             // with a specified columnID we will insert the eID into the range or search for available slot
             if( columnID !== false ){
                 // fill map with event ID
                 for (var i=start;i<end;i++){
-                    this.eventData.map[columnID][i] = eID;
+                    this.eventData[ uuid ].map[columnID][i] = eID;
                 }
                 // update event column actual position
-                this.eventData.item[ itemID ].column = columnID+1;
+                this.eventData[ uuid ].item[ itemID ].column = columnID+1;
 
                 // stop debug timer
                 if(this._debug)
@@ -220,11 +281,11 @@
                 // loop through the time slots in each column and check to see if we can insert the event
                 var cleanSpace = true;
                 // loop through available map columns
-                for (var i=0;i<this.eventData.map.length;i++){
+                for (var i=0;i<this.eventData[ uuid ].map.length;i++){
                     cleanSpace = true;
                     // loop through the time slots in each column
                     for (var ii=start;ii<end;ii++){
-                        if (this.eventData.map[i][ii] != '') {
+                        if (this.eventData[ uuid ].map[i][ii] != '') {
                             cleanSpace = false;
                             break;
                         }
@@ -234,8 +295,8 @@
                         columnID = i;
                         break;
                     // if there are no available spaces and loop is ending then set column to increment to next
-                    } else if( !cleanSpace && i == this.eventData.map.length-1 ){
-                        columnID = this.eventData.map.length;
+                    } else if( !cleanSpace && i == this.eventData[ uuid ].map.length-1 ){
+                        columnID = this.eventData[ uuid ].map.length;
                     }
                 }
 
@@ -244,10 +305,11 @@
                     console.timeEnd(this._name + "-insertEventToMap");
 
                 // determined available column to insert event
-                this.insertEventToMap( eID, start, end, columnID );
+                this.insertEventToMap( eID, start, end, uuid, columnID );
             }
         },
         setStartOfDay: function(){
+            // when in debug mode
             if( this._debug ) {
                 console.time(this._name + "-setStartOfDay");
                 console.log(this._name + ".setStartOfDay()");
@@ -277,6 +339,7 @@
         arrayFill: function (start_index, duration, mixed_val) {
 			// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
 			// improved by: Waldo Malqui Silva
+            // when in debug mode
 			if( this._debug ) {
 			    console.time(this._name + "-arrayFill");
 			    console.log(this._name + ".arrayFill(" + start_index + "," + duration + "," + mixed_val + ")");
@@ -295,6 +358,31 @@
 			    console.timeEnd(this._name + "-arrayFill");
 
 			return tmp_arr;
+        },
+        getUUID: function() {
+            // http://www.ietf.org/rfc/rfc4122.txt
+            // when in debug mode
+            if( this._debug ) {
+                console.time(this._name + "-getUUID");
+                console.log(this._name + ".getUUID()");
+            }
+            var s = [],hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+            // bits 12-15 of the time_hi_and_version field to 0010
+            s[14] = "4";  
+            // bits 6-7 of the clock_seq_hi_and_reserved to 01
+            s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  
+            s[8] = s[13] = s[18] = s[23] = "-";
+
+            var uuid = s.join("");
+
+            // stop debug timer
+            if(this._debug)
+                console.timeEnd(this._name + "-getUUID");
+
+            return uuid;
         }
     };
 
