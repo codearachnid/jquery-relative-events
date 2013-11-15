@@ -22,7 +22,7 @@
             eventOffset: {
                 top: -61, // offset because of 48 borders for hour and half hour dividers
                 left: 5,
-                height: -4, // offset height because of the event borders
+                height: -5, // offset height because of the event borders
                 width: -6, // offset width because of the event borders
             },
             setNow: true,
