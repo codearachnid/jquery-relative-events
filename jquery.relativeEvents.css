@@ -5,7 +5,7 @@
  * 
  */
 .calendar {
-  width: 600px;
+  width: 775px;
   border: 1px solid #444;
   position: relative;
   height: 599px;
@@ -21,7 +21,7 @@
 .calendar .grid li {
   display: block;
   height: 60px;
-  width: 600px;
+  width: 775px;
   position: relative;
 }
 .calendar .grid li span {
@@ -53,14 +53,18 @@
   display: block;
   z-index: 5;
 }
-.calendar .events {
+.calendar .day {
   z-index: 20;
-  width: 545px;
-  margin-left: 55px;
+  width: 715px;
   position: relative;
-  height: 100%;
+  height: 1440px;
+  float: left;
+  border-right: 1px solid #eee;
 }
-.calendar .events .event {
+.calendar .day.first {
+  margin-left: 58px;
+}
+.calendar .day .event {
   padding: 2px;
   margin: 0;
   background: #ddd;
@@ -72,4 +76,10 @@
   opacity: .75;
   top: 0;
   left: 0;
+}
+.calendar.single .day {
+  width: 717px;
+}
+.calendar.fullweek .day {
+  width: 99px;
 }
