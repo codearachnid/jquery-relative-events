@@ -5,12 +5,10 @@ A simple plugin to organize your events in a daily view and positioned in relati
 
 Has the ability to parse any number of day columns added to the calendar view - will dynamically position events within proper column by day.
 
+##[Live Demo](http://codearachnid.github.io/jquery-relative-events/)
+
 ####Contributors
 
 * [Timothy Wood](http://www.imaginesimplicity.com)
 * Mark Steele
 * Sankar Lakshmipathi
-
-##Demo:
-
-![screenshot](https://raw.github.com/codearachnid/jquery-relative-events/master/screenshot.png)
