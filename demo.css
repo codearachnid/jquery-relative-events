@@ -5,7 +5,7 @@
  * 
  */
 .calendar {
-  width: 775px;
+  width: 620px;
   border: 1px solid #444;
   position: relative;
   height: 599px;
@@ -21,7 +21,7 @@
 .calendar .grid li {
   display: block;
   height: 60px;
-  width: 775px;
+  width: 620px;
   position: relative;
 }
 .calendar .grid li span {
@@ -89,7 +89,7 @@
 }
 .calendar .now {
   height: 5px;
-  width: 725px;
+  width: 560px;
   background: transparent;
   position: absolute;
   left: 35px;
@@ -139,7 +139,7 @@
 }
 .calendar .day {
   z-index: 20;
-  width: 715px;
+  width: 656px;
   position: relative;
   height: 1440px;
   float: left;
@@ -165,8 +165,8 @@
   left: 0;
 }
 .calendar.single .day {
-  width: 717px;
+  width: 656px;
 }
 .calendar.fullweek .day {
-  width: 99px;
+  width: 92px;
 }
