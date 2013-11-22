@@ -139,7 +139,7 @@
 }
 .calendar .day {
   z-index: 20;
-  width: 656px;
+  width: 562px;
   position: relative;
   height: 1440px;
   float: left;
@@ -165,7 +165,7 @@
   left: 0;
 }
 .calendar.single .day {
-  width: 656px;
+  width: 562px;
 }
 .calendar.fullweek .day {
   width: 79px;
