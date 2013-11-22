@@ -1,0 +1,172 @@
+/**
+ * jQuery Relative Events
+ *
+ * These styles are the basic framework for layout
+ * 
+ */
+.calendar {
+  width: 775px;
+  border: 1px solid #444;
+  position: relative;
+  height: 599px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.calendar .grid {
+  list-style: none;
+  margin: -1px 0 0;
+  padding: 0;
+  position: absolute;
+}
+.calendar .grid li {
+  display: block;
+  height: 60px;
+  width: 775px;
+  position: relative;
+}
+.calendar .grid li span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 60px;
+  padding: 0 5px 0 0;
+  width: 50px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  border-top: 1px dotted #eee;
+  display: block;
+  text-align: right;
+  z-index: 10;
+  font-size: 10px;
+  line-height: 30px;
+  color: #333;
+  opacity: .5;
+}
+.calendar .grid li div {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  border-bottom: 1px dotted #ddd;
+  border-top: 1px solid #ddd;
+  margin-bottom: 30px;
+  position: absolute;
+  display: block;
+  z-index: 5;
+}
+.calendar .grid li[data-hour="1"],
+.calendar .grid li[data-hour="2"],
+.calendar .grid li[data-hour="3"],
+.calendar .grid li[data-hour="4"],
+.calendar .grid li[data-hour="5"],
+.calendar .grid li[data-hour="6"],
+.calendar .grid li[data-hour="7"],
+.calendar .grid li[data-hour="18"],
+.calendar .grid li[data-hour="19"],
+.calendar .grid li[data-hour="20"],
+.calendar .grid li[data-hour="21"],
+.calendar .grid li[data-hour="22"],
+.calendar .grid li[data-hour="23"],
+.calendar .grid li[data-hour="24"] {
+  background: #D6EBFF;
+}
+.calendar .grid li[data-hour="1"] div,
+.calendar .grid li[data-hour="2"] div,
+.calendar .grid li[data-hour="3"] div,
+.calendar .grid li[data-hour="4"] div,
+.calendar .grid li[data-hour="5"] div,
+.calendar .grid li[data-hour="6"] div,
+.calendar .grid li[data-hour="7"] div,
+.calendar .grid li[data-hour="18"] div,
+.calendar .grid li[data-hour="19"] div,
+.calendar .grid li[data-hour="20"] div,
+.calendar .grid li[data-hour="21"] div,
+.calendar .grid li[data-hour="22"] div,
+.calendar .grid li[data-hour="23"] div,
+.calendar .grid li[data-hour="24"] div {
+  border-bottom: 1px dotted #99CCFF;
+  border-top: 1px solid #99CCFF;
+}
+.calendar .now {
+  height: 5px;
+  width: 725px;
+  background: transparent;
+  position: absolute;
+  left: 35px;
+  top: 600px;
+  z-index: 40;
+}
+.calendar .now .label {
+  background: #ff9999;
+  color: white;
+  font-size: 8px;
+  position: absolute;
+  width: 25px;
+  text-align: center;
+  top: 0;
+  left: 0;
+  padding: 1px 0;
+  z-index: 41;
+}
+.calendar .now .arrow-left {
+  height: 0;
+  width: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 5px solid #ff9999;
+  position: absolute;
+  top: 0;
+  left: 25px;
+}
+.calendar .now .line {
+  background: #ff9999;
+  height: 1px;
+  width: 100%;
+  border: none;
+  position: absolute;
+  top: -2px;
+  left: 0;
+}
+.calendar .now .arrow-right {
+  height: 0;
+  width: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 5px solid #ff9999;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.calendar .day {
+  z-index: 20;
+  width: 715px;
+  position: relative;
+  height: 1440px;
+  float: left;
+  border-right: 1px solid #eee;
+}
+.calendar .day.first {
+  margin-left: 58px;
+}
+.calendar .day.today {
+  background: #99E6E6;
+}
+.calendar .day .event {
+  padding: 2px;
+  margin: 0;
+  background: #ddd;
+  color: #333;
+  border-radius: 2px;
+  border: 1px solid #666;
+  position: absolute;
+  overflow: hidden;
+  opacity: .75;
+  top: 0;
+  left: 0;
+}
+.calendar.single .day {
+  width: 717px;
+}
+.calendar.fullweek .day {
+  width: 99px;
+}
