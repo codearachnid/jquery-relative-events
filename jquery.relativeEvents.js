@@ -367,7 +367,7 @@
             
             // set .now to hourly position
             var currentDate = new Date();
-            nowElement.css( { top: ( ( currentDate.getHours() - 1 ) * 60 ) + currentDate.getMinutes() } );
+            nowElement.css( { top: ( ( currentDate.getHours() - 1 ) * 60 ) + currentDate.getMinutes() - nowElement.outerHeight() } );
 
             // stop debug timer
             if(this._debug)
