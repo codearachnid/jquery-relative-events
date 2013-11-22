@@ -131,7 +131,7 @@ jQuery(document).ready(function($){
                         debug: true,
                         eventOffset: {
                 top: -61, // offset because of 48 borders for hour and half hour dividers
-                left: 10,
+                left: 6.5,
                 height: -5, // offset height because of the event borders
                 width: -6, // offset width because of the event borders
             }
